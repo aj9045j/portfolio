@@ -117,9 +117,12 @@ let swiper = new Swiper(".mySwiper", {
   mousewheel: true,
   keyboard: true,
 });
-
+// localStorage.setItem("dark");
 // SCROLL SECTIONS ACTIVE LINK
 const sections = document.querySelectorAll("section[id]");
+
+// localStorage.setItem("selected-theme", 	dark);
+// localStorage.setItem("selected-icon", 	uil-moon);
 
 function scrollActive() {
   const scrollY = window.pageYOffset;
@@ -157,40 +160,85 @@ function scrollUpfunc() {
   else scrollUp.classList.remove("show-scroll");
 }
 window.addEventListener("scroll", scrollUpfunc);
-
-// DARK/LIGHT THEME
+// DARK/LIGHT THEME (Default Dark Mode)
 const themeButton = document.getElementById("theme-button");
 const darkTheme = "dark-theme";
-const iconTheme = "uil-sun";
+const lightTheme = "light-theme"; // Added for clarity
+const iconTheme = "uil-sun"; // Consistent with light mode icon
 
-// Previously selected topic (if user selected)
+// Check for previously selected theme (if user selected)
 const selectedTheme = localStorage.getItem("selected-theme");
-const selectedIcon = localStorage.getItem("selected-icon");
 
-// obtain the current theme
-const getCurrentTheme = () =>
-  document.body.classList.contains(darkTheme) ? "dark" : "light";
-const getCurrentIcon = () =>
-  themeButton.classList.contains(iconTheme) ? "uil-moon" : "uil-sun";
+// Determine the default theme (assuming dark mode is default)
+const defaultTheme = selectedTheme || darkTheme; // Use saved theme if set, otherwise default to dark
 
-if (selectedTheme) {
-  document.body.classList[selectedTheme === "dark" ? "add" : "remove"](
-    darkTheme
-  );
-  themeButton.classList[selectedIcon === "uil-moon" ? "add" : "remove"](
-    iconTheme
-  );
-}
+// Function to set the current theme
+const setCurrentTheme = (theme) => {
+  document.body.classList.remove(darkTheme, lightTheme); // Remove both classes first
+  document.body.classList.add(theme); // Add the desired theme class
+};
+
+// Set the initial theme based on default or user preference
+setCurrentTheme(defaultTheme);
+
+// Function to get the current theme
+const getCurrentTheme = () => document.body.classList.contains(darkTheme) ? "dark" : "light";
+
+// Function to toggle the theme icon (assuming "uil-moon" for dark, "uil-sun" for light)
+const toggleThemeIcon = () => {
+  themeButton.classList.toggle(iconTheme);
+};
+
+// Set the initial theme icon based on current theme
+toggleThemeIcon();
 
 // Activate/Deactivate the theme manually with the button
 themeButton.addEventListener("click", () => {
-  // Add or remove the dark icon/theme
-  document.body.classList.toggle(darkTheme);
-  themeButton.classList.toggle(iconTheme);
-  // We save the theme and the current icon that the user chose
-  localStorage.setItem("selected-theme", getCurrentTheme());
-  localStorage.setItem("selected-icon", getCurrentIcon());
+  const currentTheme = getCurrentTheme();
+  const newTheme = currentTheme === "dark" ? lightTheme : darkTheme;
+
+  setCurrentTheme(newTheme);
+  toggleThemeIcon();
+
+  // Save the newly selected theme for future visits
+  localStorage.setItem("selected-theme", newTheme);
 });
+
+
+// // DARK/LIGHT THEME
+// const themeButton = document.getElementById("theme-button");
+// const darkTheme = "dark-theme";
+// const iconTheme = "uil-sun";
+
+// // Previously selected topic (if user selected)
+// const selectedTheme = localStorage.getItem("selected-theme");
+// const selectedIcon = localStorage.getItem("selected-icon");
+
+// // obtain the current theme
+// const getCurrentTheme = () =>
+//   document.body.classList.contains(darkTheme) ? "dark" : "light";
+// const getCurrentIcon = () =>
+//   themeButton.classList.contains(iconTheme) ? "uil-moon" : "uil-sun";
+
+// if (selectedTheme) {
+//   document.body.classList[selectedTheme === "dark" ? "add" : "remove"](
+//     darkTheme
+//   );
+//   themeButton.classList[selectedIcon === "uil-moon" ? "add" : "remove"](
+//     iconTheme
+//   );
+// }
+
+
+// // Activate/Deactivate the theme manually with the button
+// themeButton.addEventListener("click", () => {
+//   // Add or remove the dark icon/theme
+//   document.body.classList.toggle(darkTheme);
+//   themeButton.classList.toggle(iconTheme);
+//   // We save the theme and the current icon that the user chose
+//   localStorage.setItem("selected-theme", getCurrentTheme());
+//   localStorage.setItem("selected-icon", getCurrentIcon());
+// });
 
 // Typing Animation using Typed JS
 var typed = new Typed(".type", {
